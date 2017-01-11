@@ -34,7 +34,7 @@ Et Voil&agrave;! You can now search through the post list and display results in
 You can customize certain parameters on how this plugin will behave:
 
 ### Results
-By default and as a fallback, the results are appended a results id element or to the body but it is better you define a results box of your own.
+By default and as a fallback, the results are appended to a results element identified by id="results" or to the body but you better define a results box of your own.
 Create a results box like the example below
 ```html
     <ul class="post-results"></ul>
@@ -92,6 +92,13 @@ The above defines a custom message for the user, easy!
  - Output debugging method
  - More date formats
  - Time entity
+
+---
+
+## About
+
+This plugin was written by me, [willmer], if you have further comments reach me at [@wubarahona].
+I hope you find this little plugin useful :) feel free to fork it and extend it.
 
 License
 ----
