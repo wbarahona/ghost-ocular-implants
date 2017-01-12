@@ -1,0 +1,29 @@
+{
+  "name": "ghost-ocular-implants",
+  "version": "1.0.0",
+  "description": "A jquery plugin for ghost blog and allows the visitors to search for posts or tags",
+  "main": "ghost-ocular-implants.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wbarahona/ghost-ocular-implants.git"
+  },
+  "keywords": [
+    "ghost",
+    "blog",
+    "ocular",
+    "implants",
+    "jquery-plugin",
+    "ecosystem:jquery",
+    "search",
+    "plugin"
+  ],
+  "author": "Willmer Barahona",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/wbarahona/ghost-ocular-implants/issues"
+  },
+  "homepage": "https://github.com/wbarahona/ghost-ocular-implants"
+}
