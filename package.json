@@ -1,6 +1,6 @@
 {
   "name": "ghost-ocular-implants",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A jquery plugin for ghost blog and allows the visitors to search for posts or tags",
   "main": "ghost-ocular-implants.js",
   "scripts": {

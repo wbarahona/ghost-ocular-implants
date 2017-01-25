@@ -30,7 +30,7 @@
 
         //
         // jQuery Cached vars
-        // -------------------------------------------------------------
+        // --------------------------------------------------------
             var $searchForm = self.parent('form');
             var $searchInput = self;
             var $searchResults = $doc.find(internals.settings.resultBox) || $body;
@@ -51,6 +51,7 @@
         // --------------------------------------------------------
             internals.unique = function(array) {
                 var unique = [];
+
                 for (var i = 0; i < array.length; i += 1) {
                     if (unique.indexOf(array[i]) == -1) {
                         unique.push(array[i])
@@ -63,10 +64,10 @@
             internals.mergeResults = function (byTitle, byTag) {
                 var arr = [];
 
-                arr.push(byTitle);
-                arr.concat(byTag);
+                arr = arr.concat(byTitle);
+                arr = arr.concat(byTag);
 
-                return internals.unique(arr)[0];
+                return internals.unique(arr);
             };
 
         //
@@ -87,23 +88,94 @@
             };
 
         //
+        // Add leading zero
+        // --------------------------------------------------------
+            function addZero (i) {
+                if (i < 10) {
+                    i = '0' + i;
+                }
+
+                return i;
+            }
+
+        //
         // Return post tags list
         // --------------------------------------------------------
-            internals.returnTagsList = function (post) {
+            internals.returnTagsList = function (entity, post) {
                 var taglist = '';
                 var tagarr = post.tags;
                 var tagsLen = post.tags.length;
+                var isTagsClass = entity.includes('_class');
+                var entityIds = entity.split(':');
+                var tagPrefix = (typeof entityIds[1] !== 'undefined') ? entityIds[1].slice(1) : '';
+                var sep = (isTagsClass) ? ' ' : ', ';
+                var tagUrl = '/tag/';
 
                 if (tagsLen <= 0) {
-                    taglist = 'no tags';
+                    taglist = (isTagsClass) ? 'no-tags' : 'no tags';
                 } else {
                     for (var i = 0; i < tagsLen; ++i) {
-                        taglist += tagarr[i].name+', ';
+                        if (!isTagsClass) {
+                            taglist += '<a href="' + tagUrl + tagarr[i].name + '/">' + tagPrefix + tagarr[i].name + '</a>' + sep;
+                        } else {
+                            taglist += tagPrefix + tagarr[i].name + sep;
+                        }
                     }
-                    taglist = taglist.slice(0, -2);
+                    taglist = (isTagsClass) ? taglist.slice(0, -1) : taglist.slice(0, -2);
                 }
 
                 return taglist;
+            };
+
+        //
+        // Return a pretty time defined by user
+        // --------------------------------------------------------
+            internals.returnPrettyTime = function (entity, post) {
+                var prettytime = '';
+                var StringPostdate = post.created_at;
+                var DatePostdate = new Date(StringPostdate);
+                var entityIds = entity.split(':');
+                var dateformat = (typeof entityIds[1] !== 'undefined') ? entityIds[1].slice(1) : 'HH-MM-SS';
+                var dateFormatChunks = dateformat.split('-');
+                var locale = 'en-us';
+                var getDateFunctions = {
+                    HH: function (date) {
+
+                        return date.getHours();
+                    },
+                    MM: function (date) {
+
+                        return addZero(date.getMinutes());
+                    },
+                    SS: function (date) {
+
+                        return addZero(date.getSeconds());
+                    }
+                };
+
+                for (var i = 0; i < dateFormatChunks.length; i++) {
+                    prettytime += getDateFunctions[dateFormatChunks[i]](DatePostdate) + ':';
+                }
+                prettytime = prettytime.slice(0, -1);
+
+                return prettytime;
+            };
+
+        //
+        // Return excerpt
+        // --------------------------------------------------------
+            internals.returnExcerpt =  function (entity, post) {
+                var entityIds = entity.split(':');
+                var excerptNum = (typeof entityIds[1] !== 'undefined') ? entityIds[1].slice(1) : '26';
+                var htmlWords = post.html.split(' ');
+                var wordsLen = htmlWords.length;
+
+                // htmlWords[0] = htmlWords[0].slice(3);
+                // htmlWords[wordsLen - 1] = htmlWords[wordsLen - 1].slice(0, -4);
+
+                // console.log(htmlWords[0], htmlWords[wordsLen - 1]);
+
+                return htmlWords.splice(0, excerptNum).join(' ').substring(3);
             };
 
         //
@@ -113,7 +185,8 @@
                 var prettydate = '';
                 var StringPostdate = post.created_at;
                 var DatePostdate = new Date(StringPostdate);
-                var dateformat = entity.split(':')[1].slice(1);
+                var entityIds = entity.split(':');
+                var dateformat = (typeof entityIds[1] !== 'undefined') ? entityIds[1].slice(1) : 'MM-DD-YYYY';
                 var dateFormatChunks = dateformat.split('-');
                 var locale = 'en-us';
                 var getDateFunctions = {
@@ -126,22 +199,16 @@
                         return date.getFullYear();
                     },
                     MM: function (date) {
-                        var monthNum = date.getMonth() + 1;
 
-                        if (monthNum < 10) monthNum = '0'+monthNum;
-
-                        return monthNum;
+                        return addZero(date.getMonth() + 1);
                     },
                     MMM: function (date) {
 
                         return date.toLocaleString(locale, { month: 'long' });
                     },
                     DD: function (date) {
-                        var dateNum = date.getDate();
 
-                        if (dateNum < 10) dateNum = '0'+dateNum;
-
-                        return dateNum;
+                        return addZero(date.getDate());
                     }
                 };
 
@@ -162,12 +229,18 @@
                 return templateStr.replace(rx, function(entity) {
                     var entityName = entity.slice(2,-2);
 
-                    if (entityName === 'tags') {
+                    if (entityName.includes('tags')) {
 
-                        return internals.returnTagsList(postentities);
+                        return internals.returnTagsList(entityName, postentities);
                     } else if (entityName.includes('date')) {
 
                         return internals.returnPrettyDate(entityName, postentities);
+                    } else if (entityName.includes('time')) {
+
+                        return internals.returnPrettyTime(entityName, postentities);
+                    } else if (entityName.includes('excerpt')) {
+
+                        return internals.returnExcerpt(entityName, postentities);
                     } else {
 
                         return internals.objresolve(entityName, postentities);
@@ -209,7 +282,7 @@
                 internals.searchstring = str;
                 internals.searchterms = keywords;
 
-                //
+                // test,manolo
                 // Find results by post title
                 // --------------------------------------------------
                 results.byTitle = internals.postlist.filter(function (post) {
@@ -218,7 +291,7 @@
                         return keywords.indexOf(titleWord) >= 0;
                     });
 
-                    return filteredTitles.length > 0;
+                    return filteredTitles.length > 0 && post.status === 'published';
                 });
 
                 //
@@ -230,7 +303,7 @@
                         return keywords.indexOf(tag.name) >= 0;
                     });
 
-                    return filteredTags.length > 0;
+                    return filteredTags.length > 0 && post.status === 'published';
                 });
 
                 results.merged = internals.mergeResults(results.byTitle, results.byTag);

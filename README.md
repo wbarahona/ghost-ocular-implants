@@ -62,6 +62,18 @@ The above will output a list item with the post slug - the title - author name
 **About the {{tags}} entity:**
 This 'special' entity will output the post tags automatically for you, so you need only to place the entity and done, all post tags will be shown separated by comma.
 
+**About the {{tags_class: [prefix]}}**
+This 'special' entity will output the post tags separated by a space, you can define a prefix for the tag class. You can use it as follows:
+```html
+    <div class="{{tags_class: tag-}}">
+```
+
+This above will output
+
+```html
+    <div class="tag-insights tag-ghost tag-planes tag-honduras">
+```
+
 **About the {{date: [ date format ]**
 This 'special' entity will output the post date in a friendly way, as ghost blog stores the save date as string in javascript date format we can have access to it and modify it as we see fit, but this plugin has a more friendly way to present dates other than **"2017-01-10T17:24:55.000Z"**. Now you can simply use:
 ```javascript
@@ -76,6 +88,16 @@ That above will output the post date in the MM-DD-YYYY format, sadfuly for now y
 - YYYY-MMM-DD
 
 and all the above with the two digit year format (YY).
+
+**About the {{time: [ time-format ]}}**
+This 'special' entity will output the post time in a friendly way, this entity can be used in the same fashion as the date entity.
+
+**About the {{excerpt: [ words length ]}}**
+This 'special' entity will output a post excerpt based on the post html, will display a defined word number. Easy as that!
+```javascript
+    {template: '<li>{{title}} >> {{excerpt: 10}}</li>'}
+```
+This excerpt will have 10 words long from the begining of the post.
 
 ### No results template
 You can define a custom template when no results are found, you can set it by passing the following option:
@@ -108,7 +130,7 @@ GNU GENERAL PUBLIC LICENSE
 
 
 
-   [mustache]: <http://handlebarsjs.com/>
+   [handlebars]: <http://handlebarsjs.com/>
    [git-repo-url]: <https://github.com/wbarahona/ghost-ocular-implants>
    [willmer]: <http://wbarahona.me>
    [@wubarahona]: <http://twitter.com/wubarahona>
