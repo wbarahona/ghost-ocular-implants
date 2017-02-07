@@ -1,3 +1,4 @@
+
 # Ghost Ocular Implants Upgrade
 
 [![N|Solid](http://vignette2.wikia.nocookie.net/starcraft/images/1/1e/InterOcImp_Terran_SC1.PNG/revision/latest?cb=20100605035249)](https://github.com/wbarahona/ghost-ocular-implants)
@@ -106,6 +107,25 @@ You can define a custom template when no results are found, you can set it by pa
 ```
 The above defines a custom message for the user, easy!
 
+### Hide Post Selector
+Welp, its kinda ankward to present duplicated results on screen, that means that current visible post and posts in results will be mixed, making it a not clean solution.
+Now with the ```hidePostsSelector``` option you can easy tell the plugin which posts to hide, with a tiny catch, by adding in your CSS if not already two utility css classes:
+```css
+    .visible {
+      display: block; // or visibility: visible; height: auto;
+    }
+    .hidden {
+      display: none; // or visibility: hidden; height: 0;
+    }
+```
+**Note**: that those are the names coded in the plugin for the utility classes that the plugin will look for, they are quite common, I promise to add a option to further define your class names, if you don't feel their names :P
+
+```javascript
+    {hidePostsSelector: '.hide-these'}
+```
+
+The above will search for ```.hide-these``` class and when the user is typing, the plugin + your utility classes will do the trick. Rememeber to add that class name to the posts in the theme templates. If you do not define any name it will search for ```..post-wrap``` class, so please make sure this class name exists in the template.
+
 ---
 
 ## Todos
@@ -113,7 +133,7 @@ The above defines a custom message for the user, easy!
  - Write Tests
  - Output debugging method
  - More date formats
- - Time entity
+ - ~~Time entity~~
 
 ---
 

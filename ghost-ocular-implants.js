@@ -25,7 +25,8 @@
             // Default values for the plugin
             resultBox: '#results',
             noresults: '<p>No post name or tags were found</p>',
-            template: '<li><a href="{{url}}">{{title}} - tags: [ {{tags}} ] on {{date: MM-DD-YY}}</a></li>'
+            template: '<li><a href="{{url}}">{{title}} - tags: [ {{tags}} ] on {{date: MM-DD-YY}}</a></li>',
+            hidePostsSelector: '.post-wrap'
         }, opts);
 
         //
@@ -34,6 +35,7 @@
             var $searchForm = self.parent('form');
             var $searchInput = self;
             var $searchResults = $doc.find(internals.settings.resultBox) || $body;
+            var $postWrapToHide = $doc.find(internals.settings.hidePostsSelector);
 
         //
         // Get posts fn
@@ -327,8 +329,10 @@
 
                     if (thisVal === '') {
                         internals.emptyResults();
+                        $postWrapToHide.removeClass('hidden').addClass('visible');
                     } else {
                         internals.find(thisVal);
+                        $postWrapToHide.removeClass('visible').addClass('hidden');
                     }
                 });
             };
